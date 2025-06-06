@@ -7,11 +7,13 @@ import { ComposeButton } from "@/components/ComposeButton";
 import { TopBar } from "@/components/TopBar";
 import { emails, folders } from "@/data/emails";
 import type { Email } from "@/data/emails";
+import { Menu, X } from "lucide-react";
 
 const Index = () => {
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
   const [selectedFolder, setSelectedFolder] = useState("inbox");
   const [isComposeOpen, setIsComposeOpen] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const filteredEmails = emails.filter(email => email.folder === selectedFolder);
 
@@ -24,18 +26,40 @@ const Index = () => {
     setSelectedEmail(null);
   };
 
+  const toggleMobileSidebar = () => {
+    setIsMobileSidebarOpen(!isMobileSidebarOpen);
+  };
+
   return (
     <div className="min-h-screen bg-white font-outfit">
-      <TopBar />
+      <TopBar onMenuClick={toggleMobileSidebar} />
       
-      <div className="flex h-[calc(100vh-64px)]">
-        <Sidebar 
-          folders={folders}
-          selectedFolder={selectedFolder}
-          onFolderSelect={setSelectedFolder}
-        />
+      <div className="flex h-[calc(100vh-64px)] relative">
+        {/* Mobile Sidebar Overlay */}
+        {isMobileSidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+            onClick={() => setIsMobileSidebarOpen(false)}
+          />
+        )}
         
-        <div className="flex-1 flex">
+        {/* Sidebar */}
+        <div className={`
+          fixed lg:relative top-0 left-0 h-full z-50 lg:z-auto
+          transform transition-transform duration-300 ease-in-out lg:transform-none
+          ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          w-64 lg:w-64
+        `}>
+          <Sidebar 
+            folders={folders}
+            selectedFolder={selectedFolder}
+            onFolderSelect={setSelectedFolder}
+            onClose={() => setIsMobileSidebarOpen(false)}
+          />
+        </div>
+        
+        {/* Main Content */}
+        <div className="flex-1 flex min-w-0">
           {selectedEmail ? (
             <EmailDetail 
               email={selectedEmail}
