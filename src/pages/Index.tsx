@@ -7,12 +7,10 @@ import { ComposeButton } from "@/components/ComposeButton";
 import { TopBar } from "@/components/TopBar";
 import { emails, folders } from "@/data/emails";
 import type { Email } from "@/data/emails";
-import { Menu, X } from "lucide-react";
 
 const Index = () => {
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
   const [selectedFolder, setSelectedFolder] = useState("inbox");
-  const [isComposeOpen, setIsComposeOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const filteredEmails = emails.filter(email => email.folder === selectedFolder);
@@ -75,11 +73,7 @@ const Index = () => {
         </div>
       </div>
 
-      <ComposeButton 
-        onClick={() => setIsComposeOpen(true)}
-        isOpen={isComposeOpen}
-        onClose={() => setIsComposeOpen(false)}
-      />
+      <ComposeButton />
     </div>
   );
 };
